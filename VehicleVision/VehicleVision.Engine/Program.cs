@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
+using VehicleVision.Engine.VideoProcessing;
 
 namespace VehicleVision.Engine
 {
@@ -15,7 +16,7 @@ namespace VehicleVision.Engine
         static void Main()
         {
             var config = new JobHostConfiguration();
-
+            VideoDetection _detection = new VideoDetection();
             if (config.IsDevelopment)
             {
                 config.UseDevelopmentSettings();
@@ -23,7 +24,12 @@ namespace VehicleVision.Engine
 
             var host = new JobHost(config);
             // The following code ensures that the WebJob will be running continuously
-            host.RunAndBlock();
+            //host.RunAndBlock();
+
+            while (true)
+            {
+                _detection.StartFrameProcessing();
+            }
         }
     }
 }
