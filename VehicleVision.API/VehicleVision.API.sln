@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2035
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VehicleVision.API", "VehicleVision.API\VehicleVision.API.csproj", "{E69086E5-3A95-4564-8834-BFE78E149040}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VehicleVision.DAL", "VehicleVision.DAL\VehicleVision.DAL.csproj", "{6059836B-83B9-4FF8-ABF9-5C2576C9A3F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VehicleVision.BLL", "VehicleVision.BLL\VehicleVision.BLL.csproj", "{298D489E-EB66-490B-9770-F997600BDD47}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VehicleVision.Core", "VehicleVision.Core\VehicleVision.Core.csproj", "{EFCE1897-9AB0-4247-A199-9F9CE6151298}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VehicleVision.Engine", "VehicleVision.Engine\VehicleVision.Engine.csproj", "{7BDD408D-F986-47E1-861F-7ADF9268A266}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VehicleVision.WebJob", "VehicleVision.WebJob\VehicleVision.WebJob.csproj", "{09681FC0-E746-4D6C-B297-3C72BBCA632B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E69086E5-3A95-4564-8834-BFE78E149040}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E69086E5-3A95-4564-8834-BFE78E149040}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E69086E5-3A95-4564-8834-BFE78E149040}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E69086E5-3A95-4564-8834-BFE78E149040}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6059836B-83B9-4FF8-ABF9-5C2576C9A3F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6059836B-83B9-4FF8-ABF9-5C2576C9A3F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6059836B-83B9-4FF8-ABF9-5C2576C9A3F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6059836B-83B9-4FF8-ABF9-5C2576C9A3F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{298D489E-EB66-490B-9770-F997600BDD47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{298D489E-EB66-490B-9770-F997600BDD47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{298D489E-EB66-490B-9770-F997600BDD47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{298D489E-EB66-490B-9770-F997600BDD47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFCE1897-9AB0-4247-A199-9F9CE6151298}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFCE1897-9AB0-4247-A199-9F9CE6151298}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFCE1897-9AB0-4247-A199-9F9CE6151298}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFCE1897-9AB0-4247-A199-9F9CE6151298}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BDD408D-F986-47E1-861F-7ADF9268A266}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BDD408D-F986-47E1-861F-7ADF9268A266}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BDD408D-F986-47E1-861F-7ADF9268A266}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BDD408D-F986-47E1-861F-7ADF9268A266}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09681FC0-E746-4D6C-B297-3C72BBCA632B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09681FC0-E746-4D6C-B297-3C72BBCA632B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09681FC0-E746-4D6C-B297-3C72BBCA632B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09681FC0-E746-4D6C-B297-3C72BBCA632B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A7EDB85D-DEA5-4710-9EDB-A5BDDE8D172C}
+	EndGlobalSection
+EndGlobal
