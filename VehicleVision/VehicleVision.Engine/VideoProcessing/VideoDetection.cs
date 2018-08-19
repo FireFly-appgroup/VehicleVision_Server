@@ -13,8 +13,8 @@ namespace VehicleVision.Engine.VideoProcessing
 {
     internal class VideoDetection : IVideoDetection
     {
-        private CascadeClassifier _carNumberByCascade = new CascadeClassifier(Directory.GetCurrentDirectory() + "/userdata/numbers.xml");
-        private HaarCascade _vehicleByHaar = HaarCascade.FromXml(Directory.GetCurrentDirectory() + "/userdata/cars.xml");
+        private CascadeClassifier _carNumberByCascade = new CascadeClassifier(Directory.GetCurrentDirectory() + "/userdata/number.xml");
+        private HaarCascade _vehicleByHaar = HaarCascade.FromXml(Directory.GetCurrentDirectory() + "/userdata/vehicle.xml");
 
         private Bitmap _plateNumber;
         private byte[] _imageCarForSaveToDB;

@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.IO;
 using System.Text.RegularExpressions;
 using Tesseract;
@@ -7,14 +8,14 @@ namespace VehicleVision.Engine.DataRecognition
 {
     internal class DataEngine : IDataEngine
     {
-        private const string _tessDataDir = @"F:\VehicleVisionServer\VehicleVision\VehicleVision.Engine\bin\Debug\userdata\tessdata\";
+        private string _tessDataDir = Directory.GetCurrentDirectory() + "/userdata/tessdata/";
         private const string _language = "eng";
         private const string _sample = "A,B,C,E,F,O,H,M,P,T,I,X,Y,0,1,2,3,4,5,6,7,8,9";
-        private static string Str = "";
+        private static string _str = String.Empty;
 
         public string StartDataEngine(Bitmap bmp)
         {
-            Str = "";
+            _str = String.Empty;
             using (var engine = new TesseractEngine(_tessDataDir, _language, EngineMode.Default))
             {
                 engine.SetVariable("tessedit_char_whitelist", _sample);
@@ -22,18 +23,18 @@ namespace VehicleVision.Engine.DataRecognition
                 {
                     using (StreamWriter file = new StreamWriter(Directory.GetCurrentDirectory() + "/userdata/images/NotesForCarNumbers.txt", true))
                     {
-                        string text = "";
+                        string text = String.Empty;
                         Regex regex = new Regex(@"\W");
                         text = regex.Replace(page.GetText(), "");
                         if (text.Length > 6 && text.Length < 10)
                         {
                             file.WriteLine(text);
-                            Str = text;
+                            _str = text;
                         }
                     }
                 }
             }
-            return Str;
+            return _str;
         }
     }
 }
