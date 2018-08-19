@@ -6,45 +6,44 @@ namespace VehicleVision.Engine.DataRecognition
 {
     internal class FilterForImageProcessing : IFiltersForImageProcessing
     {
-        private static int ParameterOfBrightness = 60;
-        private static int ParameterOfContrast = -60;
-        private static double ParameterOfGamma = 0.9;
+        private static int ParameterOfBrightness = 60; //100
+        private static int ParameterOfContrast = -60; //-100
+        private static double ParameterOfGamma = 1;
 
         public Bitmap SetBrightness(Bitmap bmp)
         {
             BrightnessCorrection _brightnessFilter = new BrightnessCorrection(ParameterOfBrightness);
-            _brightnessFilter.ApplyInPlace(bmp);
-            return bmp;
+            return _brightnessFilter.Apply(bmp);
         }
         public Bitmap SetContrast(Bitmap bmp)
         {
             ContrastCorrection _contrastFilter = new ContrastCorrection(ParameterOfContrast);
-            _contrastFilter.ApplyInPlace(bmp);
-            return bmp;
+            return _contrastFilter.Apply(bmp);
         }
         public Bitmap SetContrastStretch(Bitmap bmp)
         {
             ContrastStretch _contrastStretchFilter = new ContrastStretch();
-            _contrastStretchFilter.ApplyInPlace(bmp);
-            return bmp;
+            return _contrastStretchFilter.Apply(bmp);
         }
         public Bitmap SetGammaCorrection(Bitmap bmp)
         {
             GammaCorrection _setGammaCorrection = new GammaCorrection(ParameterOfGamma);
-            _setGammaCorrection.ApplyInPlace(bmp);
-            return bmp;
+            return _setGammaCorrection.Apply(bmp);
         }
         public Bitmap SetNormalizedRGBChannel(Bitmap bmp)
         {
-            ExtractNormalizedRGBChannel _normalizedRGB = new ExtractNormalizedRGBChannel(RGB.G);
-            _normalizedRGB.Apply(bmp);
+            ExtractNormalizedRGBChannel _normalizedRGB_G = new ExtractNormalizedRGBChannel(RGB.G);
+            _normalizedRGB_G.Apply(bmp);
+          //  ExtractNormalizedRGBChannel _normalizedRGB_R = new ExtractNormalizedRGBChannel(RGB.R);
+          //  _normalizedRGB_R.Apply(bmp);
+          //  ExtractNormalizedRGBChannel _normalizedRGB_B = new ExtractNormalizedRGBChannel(RGB.B);
+          //  _normalizedRGB_B.Apply(bmp);
             return bmp;
         }
         public Bitmap SetSharpenFilter(Bitmap bmp)
         {
             Sharpen _sharpenFilter = new Sharpen();
-            _sharpenFilter.Apply(bmp);
-            return bmp;
+            return _sharpenFilter.Apply(bmp);
         }
         public Bitmap SetGrayScale(Bitmap bmpPhoto)
         {
