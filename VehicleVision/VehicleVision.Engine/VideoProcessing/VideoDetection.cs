@@ -124,6 +124,7 @@ namespace VehicleVision.Engine.VideoProcessing
             _filter.SetContrast(plateNumber);
             _filter.SetContrastStretch(plateNumber);
 
+            // _filter.SetGaussianSharpen(plateNumber);
             //_filter.SetGrayScale(plateNumber);
             //_filter.SetThresholdBinary(plateNumber);
             //_filter.SetOtsuThreshold(plateNumber);

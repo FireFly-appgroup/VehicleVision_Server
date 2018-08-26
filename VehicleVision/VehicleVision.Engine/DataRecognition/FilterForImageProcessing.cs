@@ -9,8 +9,8 @@ namespace VehicleVision.Engine.DataRecognition
     internal class FilterForImageProcessing : IFiltersForImageProcessing
     {
         private static int ParameterOfBrightness = 25; //100 //60
-        private static int ParameterOfContrast = -25; //-100 //-60
-        private static double ParameterOfGamma = 1.3; //0.9
+        private static int ParameterOfContrast = -50; //-100 //-60
+        private static double ParameterOfGamma = 1.5; //0.9
 
         public Bitmap SetBrightnessCorrection(Bitmap vehicleNumberImage)
         {
@@ -69,6 +69,13 @@ namespace VehicleVision.Engine.DataRecognition
             OtsuThreshold filter = new OtsuThreshold();
             filter.ApplyInPlace(rgbVehicleNumber);
             return rgbVehicleNumber;
+        }
+
+        public Bitmap SetGaussianSharpen(Bitmap vehicleNumberImage)
+        {
+            GaussianSharpen filter = new GaussianSharpen(4, 11);
+            filter.ApplyInPlace(vehicleNumberImage);
+            return vehicleNumberImage;
         }
 
         public Bitmap SetGrayScale(Bitmap vehicleNumberImage)
