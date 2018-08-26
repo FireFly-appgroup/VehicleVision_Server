@@ -13,15 +13,15 @@ namespace VehicleVision.Engine.VideoProcessing
 {
     internal class VideoDetection : IVideoDetection
     {
-        private CascadeClassifier _carNumberByCascade = new CascadeClassifier(Directory.GetCurrentDirectory() + "/userdata/number.xml");
+        private CascadeClassifier _vehicleNumberByCascade = new CascadeClassifier(Directory.GetCurrentDirectory() + "/userdata/number.xml");
         private HaarCascade _vehicleByHaar = HaarCascade.FromXml(Directory.GetCurrentDirectory() + "/userdata/vehicle.xml");
 
         private Bitmap _plateNumber;
-        private byte[] _imageCarForSaveToDB;
+        private byte[] _imageVehicleForSaveToDB;
         private Dictionary<int, DictionaryCarsPictureAndNumber> _dictionary = new Dictionary<int, DictionaryCarsPictureAndNumber>();
-        private DictionaryCarsPictureAndNumber _valueCarAndNumber;
+        private DictionaryCarsPictureAndNumber _valueVehicleAndNumber;
 
-        private Queue<Bitmap> _carsImagesQueue = new Queue<Bitmap>();
+        private Queue<Bitmap> _vehicleImagesQueue = new Queue<Bitmap>();
 
         private VideoStream _video;
         private DataEngine _data;
@@ -40,51 +40,56 @@ namespace VehicleVision.Engine.VideoProcessing
             Image<Bgr, Byte> originalFrame = _video.StartVideo().ToImage<Bgr, Byte>();
             _filter.SetGammaCorrection(originalFrame.Bitmap);
             _filter.SetNormalizedRGBChannel(originalFrame.Bitmap);
-            Rectangle getRecognitionArea = new Rectangle(0, Convert.ToInt32(originalFrame.Height * 0.35), originalFrame.Width, originalFrame.Height);
+            Rectangle getRecognitionArea = new Rectangle(0, Convert.ToInt32(originalFrame.Height * 0.4), originalFrame.Width, originalFrame.Height);
             Bitmap modifiedFrameSizeBitmap = new Bitmap(_section.CutSection(originalFrame.Bitmap, getRecognitionArea));
             Image<Bgr, Byte> modifiedFrameSize = new Image<Bgr, Byte>(modifiedFrameSizeBitmap);
             Image<Hls, Byte> equalizeImage = Equalization.GetHistrogramEqualization(modifiedFrameSize);
             Image<Gray, Byte> frameInGgray = modifiedFrameSize.Convert<Gray, Byte>();
-            CarDetected(frameInGgray);
+
+            //   Image<Gray, Byte> graySoft = frameInGgray.Convert<Gray, Byte>().PyrDown().PyrUp();
+            //   Image<Gray, Byte> gray = frameInGgray.SmoothGaussian(3).AddWeighted(frameInGgray, 1.5, -0.5, 0);
+            //  Image<Gray, Byte> bin = gray.ThresholdBinary(new Gray(149), new Gray(255));
+            VehicleDetecting(frameInGgray);
             return equalizeImage;
         }
 
-        public void CarDetected(Image<Gray, Byte> frameInGgray)
+        public void VehicleDetecting(Image<Gray, Byte> frameInGgray)
         {
             var detector = new HaarObjectDetector(_vehicleByHaar, minSize: 200,
             searchMode: ObjectDetectorSearchMode.NoOverlap, scaleFactor: 1.1f,
             scalingMode: ObjectDetectorScalingMode.SmallerToGreater);
-            Rectangle[] carsDetected = detector.ProcessFrame(frameInGgray.Bitmap);
-            foreach (Rectangle carCoordinates in carsDetected)
+            Rectangle[] vehicleDetected = detector.ProcessFrame(frameInGgray.Bitmap);
+            foreach (Rectangle vehicleCoordinates in vehicleDetected)
             {
-                frameInGgray.ROI = carCoordinates;
-                Bitmap bmpCar = frameInGgray.ToBitmap();
-                _carsImagesQueue.Enqueue(bmpCar);
+                frameInGgray.ROI = vehicleCoordinates;
+                Bitmap bmpVehicle = frameInGgray.ToBitmap();
+                //Interpolation.ScaleByPercent(bmpCar, 600);
+                _vehicleImagesQueue.Enqueue(bmpVehicle);
             }
-            CarNumberDetection(_carsImagesQueue);
+            VehicleNumberDetection(_vehicleImagesQueue);
         }
-        public void CarNumberDetection(Queue<Bitmap> carsImagesQueue)
+        public void VehicleNumberDetection(Queue<Bitmap> vehicleImagesQueue)
         {
             int counter = 0;
             Image<Gray, Byte> imageInGgray;
-            for (int i = carsImagesQueue.Count; i > 0; i--)
+            for (int i = vehicleImagesQueue.Count; i > 0; i--)
             {
-                if (carsImagesQueue.Count != 0)
+                if (vehicleImagesQueue.Count != 0)
                 {
-                    imageInGgray = new Image<Gray, Byte>(carsImagesQueue.Dequeue());
-                    Bitmap bitmapImageCar = imageInGgray.ToBitmap();
-                    carsImagesQueue.TrimExcess();
-                    Rectangle[] carNumberDetected = _carNumberByCascade.DetectMultiScale(
+                    imageInGgray = new Image<Gray, Byte>(vehicleImagesQueue.Dequeue());
+                    Bitmap bitmapImageVehicle = imageInGgray.ToBitmap();
+                    vehicleImagesQueue.TrimExcess();
+                    Rectangle[] vehicleNumberDetection = _vehicleNumberByCascade.DetectMultiScale(
                     imageInGgray, 1.1, 4, new Size(50, 20), new Size(100, 50));
                     imageInGgray.ROI = Rectangle.Empty;
 
-                    foreach (Rectangle exampleCarNumber in carNumberDetected)
+                    foreach (Rectangle vehicleNumber in vehicleNumberDetection)
                     {
                         counter++;
-                        var TrackingDetector = new Camshift(exampleCarNumber, CamshiftMode.HSL);
+                        var TrackingDetector = new Camshift(vehicleNumber, CamshiftMode.HSL);
 
-                        Bitmap OriginalNumber = new Bitmap(_section.CutNumber(bitmapImageCar, TrackingDetector.SearchWindow));
-                        Bitmap brightnessNumber = new Bitmap(_section.CutNumber(StartFrameProcessing()[1].Bitmap, TrackingDetector.SearchWindow));
+                        Bitmap OriginalNumber = new Bitmap(_section.CutNumber(bitmapImageVehicle, TrackingDetector.SearchWindow));
+                       
                         if (AverageOfBrightness.GetAVGofBrightness(OriginalNumber) <= 125)
                         {
                             _plateNumber = OriginalNumber;
@@ -92,19 +97,19 @@ namespace VehicleVision.Engine.VideoProcessing
                         }
                         else if (AverageOfBrightness.GetAVGofBrightness(OriginalNumber) > 125)
                         {
-                            _plateNumber = brightnessNumber;
+                            _plateNumber = OriginalNumber;
                             TrackingDetector.Reset();
                         }
 
                         SetFiltersToCarNumber(_plateNumber);
 
                         ImageConverter converterCar = new ImageConverter();
-                        _imageCarForSaveToDB = (byte[])converterCar.ConvertTo(bitmapImageCar, typeof(byte[]));
+                        _imageVehicleForSaveToDB = (byte[])converterCar.ConvertTo(bitmapImageVehicle, typeof(byte[]));
 
                         if (_data.StartDataEngine(_plateNumber) != "")
                         {
-                            _valueCarAndNumber = new DictionaryCarsPictureAndNumber(_imageCarForSaveToDB, _data.StartDataEngine(_plateNumber));
-                            _dictionary.Add(counter, _valueCarAndNumber);
+                            _valueVehicleAndNumber = new DictionaryCarsPictureAndNumber(_imageVehicleForSaveToDB, _data.StartDataEngine(_plateNumber));
+                            _dictionary.Add(counter, _valueVehicleAndNumber);
                             _dictionary.Clear();
                         }
                     }
@@ -114,11 +119,14 @@ namespace VehicleVision.Engine.VideoProcessing
 
         private void SetFiltersToCarNumber(Bitmap plateNumber)
         {
-            _filter.SetBrightness(plateNumber);
-            _filter.SetContrast(plateNumber);
-            _filter.SetGrayScale(plateNumber);
-            _filter.SetContrastStretch(plateNumber);
             _filter.SetSharpenFilter(plateNumber);
+            _filter.SetBrightnessCorrection(plateNumber);
+            _filter.SetContrast(plateNumber);
+            _filter.SetContrastStretch(plateNumber);
+
+            //_filter.SetGrayScale(plateNumber);
+            //_filter.SetThresholdBinary(plateNumber);
+            //_filter.SetOtsuThreshold(plateNumber);
         }
     }
 }

@@ -1,65 +1,103 @@
 ﻿using AForge.Imaging;
 using AForge.Imaging.Filters;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 
 namespace VehicleVision.Engine.DataRecognition
 {
     internal class FilterForImageProcessing : IFiltersForImageProcessing
     {
-        private static int ParameterOfBrightness = 60; //100
-        private static int ParameterOfContrast = -60; //-100
-        private static double ParameterOfGamma = 1;
+        private static int ParameterOfBrightness = 25; //100 //60
+        private static int ParameterOfContrast = -25; //-100 //-60
+        private static double ParameterOfGamma = 1.3; //0.9
 
-        public Bitmap SetBrightness(Bitmap bmp)
+        public Bitmap SetBrightnessCorrection(Bitmap vehicleNumberImage)
         {
-            BrightnessCorrection _brightnessFilter = new BrightnessCorrection(ParameterOfBrightness);
-            return _brightnessFilter.Apply(bmp);
+            BrightnessCorrection filter = new BrightnessCorrection(ParameterOfBrightness);
+            filter.ApplyInPlace(vehicleNumberImage);
+            return vehicleNumberImage;
         }
-        public Bitmap SetContrast(Bitmap bmp)
+
+        public Bitmap SetContrast(Bitmap vehicleNumberImage)
         {
             ContrastCorrection _contrastFilter = new ContrastCorrection(ParameterOfContrast);
-            return _contrastFilter.Apply(bmp);
+            _contrastFilter.ApplyInPlace(vehicleNumberImage);
+            return vehicleNumberImage;
         }
-        public Bitmap SetContrastStretch(Bitmap bmp)
+
+        public Bitmap SetContrastStretch(Bitmap vehicleNumberImage)
         {
             ContrastStretch _contrastStretchFilter = new ContrastStretch();
-            return _contrastStretchFilter.Apply(bmp);
+            _contrastStretchFilter.ApplyInPlace(vehicleNumberImage);
+            return vehicleNumberImage;
         }
-        public Bitmap SetGammaCorrection(Bitmap bmp)
+        public Bitmap SetGammaCorrection(Bitmap vehicleNumberImage)
         {
             GammaCorrection _setGammaCorrection = new GammaCorrection(ParameterOfGamma);
-            return _setGammaCorrection.Apply(bmp);
+            _setGammaCorrection.ApplyInPlace(vehicleNumberImage);
+            return vehicleNumberImage;
         }
-        public Bitmap SetNormalizedRGBChannel(Bitmap bmp)
+        public Bitmap SetNormalizedRGBChannel(Bitmap vehicleNumberImage)
         {
             ExtractNormalizedRGBChannel _normalizedRGB_G = new ExtractNormalizedRGBChannel(RGB.G);
-            _normalizedRGB_G.Apply(bmp);
-          //  ExtractNormalizedRGBChannel _normalizedRGB_R = new ExtractNormalizedRGBChannel(RGB.R);
-          //  _normalizedRGB_R.Apply(bmp);
-          //  ExtractNormalizedRGBChannel _normalizedRGB_B = new ExtractNormalizedRGBChannel(RGB.B);
-          //  _normalizedRGB_B.Apply(bmp);
-            return bmp;
+            _normalizedRGB_G.Apply(vehicleNumberImage);
+            //ExtractNormalizedRGBChannel _normalizedRGB_R = new ExtractNormalizedRGBChannel(RGB.R);
+            //_normalizedRGB_R.Apply(vehicleNumberImage);
+            //ExtractNormalizedRGBChannel _normalizedRGB_B = new ExtractNormalizedRGBChannel(RGB.B);
+            //_normalizedRGB_B.Apply(vehicleNumberImage);
+            return vehicleNumberImage;
         }
-        public Bitmap SetSharpenFilter(Bitmap bmp)
+        public Bitmap SetSharpenFilter(Bitmap vehicleNumberImage)
         {
             Sharpen _sharpenFilter = new Sharpen();
-            return _sharpenFilter.Apply(bmp);
+            _sharpenFilter.ApplyInPlace(vehicleNumberImage);
+            return vehicleNumberImage;
         }
-        public Bitmap SetGrayScale(Bitmap bmpPhoto)
+
+        public Bitmap SetThresholdBinary(Bitmap vehicleNumberImage)
         {
-            for (int y = 0; y < bmpPhoto.Height; y++)
+            Bitmap rgbVehicleNumber = AForge.Imaging.Image.Clone(FilterForImageProcessing.Convert(vehicleNumberImage) as Bitmap, PixelFormat.Format8bppIndexed);
+            Threshold filter = new Threshold(100);
+            filter.ApplyInPlace(rgbVehicleNumber);
+            return rgbVehicleNumber;
+        }
+
+        public Bitmap SetOtsuThreshold(Bitmap vehicleNumberImage)
+        {
+            Bitmap rgbVehicleNumber = AForge.Imaging.Image.Clone(FilterForImageProcessing.Convert(vehicleNumberImage) as Bitmap, PixelFormat.Format8bppIndexed);
+            OtsuThreshold filter = new OtsuThreshold();
+            filter.ApplyInPlace(rgbVehicleNumber);
+            return rgbVehicleNumber;
+        }
+
+        public Bitmap SetGrayScale(Bitmap vehicleNumberImage)
+        {
+            //for (int y = 0; y < vehicleNumberImage.Height; y++)
+            //{
+            //    for (int x = 0; x < vehicleNumberImage.Width; x++)
+            //    {
+            //        Color color = vehicleNumberImage.GetPixel(x, y);
+            //        int r = color.R;
+            //        int g = color.G;
+            //        int b = color.B;
+            //        int avg = (r + g + b) / 3;
+            //        vehicleNumberImage.SetPixel(x, y, Color.FromArgb(avg, avg, avg));
+            //    }
+            //}
+            //return vehicleNumberImage;
+            Grayscale filter = new Grayscale(0.2125, 0.7154, 0.0721);
+            return filter.Apply(vehicleNumberImage);
+        }
+
+        public static System.Drawing.Image Convert(Bitmap oldbmp)
+        {
+            using (var ms = new MemoryStream())
             {
-                for (int x = 0; x < bmpPhoto.Width; x++)
-                {
-                    Color color = bmpPhoto.GetPixel(x, y);
-                    int r = color.R;
-                    int g = color.G;
-                    int b = color.B;
-                    int avg = (r + g + b) / 3;
-                    bmpPhoto.SetPixel(x, y, Color.FromArgb(avg, avg, avg));
-                }
+                oldbmp.Save(ms, ImageFormat.Gif);
+                ms.Position = 0;
+                return System.Drawing.Image.FromStream(ms);
             }
-            return bmpPhoto;
         }
     }
 }
