@@ -120,7 +120,7 @@ namespace VehicleVision.Engine.VideoProcessing
         private void SetFiltersToCarNumber(Bitmap plateNumber)
         {
             _filter.SetSharpenFilter(plateNumber);
-            _filter.SetBrightnessCorrection(plateNumber);
+            //_filter.SetBrightnessCorrection(plateNumber);
             _filter.SetContrast(plateNumber);
             _filter.SetContrastStretch(plateNumber);
 
