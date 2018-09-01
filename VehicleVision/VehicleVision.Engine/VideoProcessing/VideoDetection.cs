@@ -27,6 +27,7 @@ namespace VehicleVision.Engine.VideoProcessing
         private DataEngine _data;
         private FilterForImageProcessing _filter;
         private VideoSection _section;
+
         public VideoDetection()
         {
             _video = new VideoStream();
@@ -35,7 +36,7 @@ namespace VehicleVision.Engine.VideoProcessing
             _section = new VideoSection();
         }
 
-        public Image<Hls, Byte> StartFrameProcessing()
+        public void StartFrameProcessing()
         {
             Image<Bgr, Byte> originalFrame = _video.StartVideo().ToImage<Bgr, Byte>();
             _filter.SetGammaCorrection(originalFrame.Bitmap);
@@ -43,17 +44,12 @@ namespace VehicleVision.Engine.VideoProcessing
             Rectangle getRecognitionArea = new Rectangle(0, Convert.ToInt32(originalFrame.Height * 0.4), originalFrame.Width, originalFrame.Height);
             Bitmap modifiedFrameSizeBitmap = new Bitmap(_section.CutSection(originalFrame.Bitmap, getRecognitionArea));
             Image<Bgr, Byte> modifiedFrameSize = new Image<Bgr, Byte>(modifiedFrameSizeBitmap);
-            Image<Hls, Byte> equalizeImage = Equalization.GetHistrogramEqualization(modifiedFrameSize);
             Image<Gray, Byte> frameInGgray = modifiedFrameSize.Convert<Gray, Byte>();
 
-            //   Image<Gray, Byte> graySoft = frameInGgray.Convert<Gray, Byte>().PyrDown().PyrUp();
-            //   Image<Gray, Byte> gray = frameInGgray.SmoothGaussian(3).AddWeighted(frameInGgray, 1.5, -0.5, 0);
-            //  Image<Gray, Byte> bin = gray.ThresholdBinary(new Gray(149), new Gray(255));
-            VehicleDetecting(frameInGgray);
-            return equalizeImage;
+            VehicleDetecting(modifiedFrameSize);
         }
 
-        public void VehicleDetecting(Image<Gray, Byte> frameInGgray)
+        public void VehicleDetecting(Image<Bgr, Byte> frameInGgray)
         {
             var detector = new HaarObjectDetector(_vehicleByHaar, minSize: 200,
             searchMode: ObjectDetectorSearchMode.NoOverlap, scaleFactor: 1.1f,
@@ -63,7 +59,7 @@ namespace VehicleVision.Engine.VideoProcessing
             {
                 frameInGgray.ROI = vehicleCoordinates;
                 Bitmap bmpVehicle = frameInGgray.ToBitmap();
-                //Interpolation.ScaleByPercent(bmpCar, 600);
+                Interpolation.ScaleByPercent(bmpVehicle, 600);
                 _vehicleImagesQueue.Enqueue(bmpVehicle);
             }
             VehicleNumberDetection(_vehicleImagesQueue);
@@ -102,7 +98,7 @@ namespace VehicleVision.Engine.VideoProcessing
                         }
 
                         SetFiltersToCarNumber(_plateNumber);
-
+                        //var finalPlateNumber = Interpolation.RemoveNoise(_plateNumber);
                         ImageConverter converterCar = new ImageConverter();
                         _imageVehicleForSaveToDB = (byte[])converterCar.ConvertTo(bitmapImageVehicle, typeof(byte[]));
 
@@ -119,13 +115,14 @@ namespace VehicleVision.Engine.VideoProcessing
 
         private void SetFiltersToCarNumber(Bitmap plateNumber)
         {
+            _filter.SetGrayScale(plateNumber);
             _filter.SetSharpenFilter(plateNumber);
-            //_filter.SetBrightnessCorrection(plateNumber);
+            _filter.SetBrightnessCorrection(plateNumber);
             _filter.SetContrast(plateNumber);
             _filter.SetContrastStretch(plateNumber);
+            _filter.SetHistogramEqualization(plateNumber);
 
             // _filter.SetGaussianSharpen(plateNumber);
-            //_filter.SetGrayScale(plateNumber);
             //_filter.SetThresholdBinary(plateNumber);
             //_filter.SetOtsuThreshold(plateNumber);
         }

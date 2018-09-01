@@ -26,7 +26,6 @@ namespace VehicleVision.Engine.DataRecognition
                               new Rectangle(0, 0, sourceWidth, sourceHeight),
                               GraphicsUnit.Pixel);
             string fileName = String.Format(@"{0}.txt", System.Guid.NewGuid());
-            RemoveNoise(bmpPhoto);
 
             bmpPhoto.Save(Directory.GetCurrentDirectory() + "/userdata/images/" + fileName + ".png", ImageFormat.Png);
             grPhoto.Dispose();

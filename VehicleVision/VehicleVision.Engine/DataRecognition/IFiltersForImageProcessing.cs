@@ -9,14 +9,15 @@ namespace VehicleVision.Engine.DataRecognition
 {
     internal interface IFiltersForImageProcessing
     {
-          Bitmap SetBrightnessCorrection(Bitmap bmp);
-          Bitmap SetContrast(Bitmap bmp);
-          Bitmap SetContrastStretch(Bitmap bmp);
-          Bitmap SetGammaCorrection(Bitmap bmp);
-          Bitmap SetNormalizedRGBChannel(Bitmap bmp);
-          Bitmap SetSharpenFilter(Bitmap bmp);
+          Bitmap SetBrightnessCorrection(Bitmap bmpPhoto);
+          Bitmap SetContrast(Bitmap bmpPhoto);
+          Bitmap SetContrastStretch(Bitmap bmpPhoto);
+          Bitmap SetGammaCorrection(Bitmap bmpPhoto);
+          Bitmap SetNormalizedRGBChannel(Bitmap bmpPhoto);
+          Bitmap SetSharpenFilter(Bitmap bmpPhoto);
           Bitmap SetGrayScale(Bitmap bmpPhoto);
           Bitmap SetThresholdBinary(Bitmap bmpPhoto);
           Bitmap SetOtsuThreshold(Bitmap bmpPhoto);
+          Bitmap SetHistogramEqualization(Bitmap bmpPhoto);
     }
 }

@@ -6,6 +6,6 @@ namespace VehicleVision.Engine.VideoProcessing
 {
     internal interface IVideoDetection
     {
-        Image<Hls, Byte> StartFrameProcessing();
+        void StartFrameProcessing();
     }
 }

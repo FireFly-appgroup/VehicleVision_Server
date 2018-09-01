@@ -97,6 +97,13 @@ namespace VehicleVision.Engine.DataRecognition
             return filter.Apply(vehicleNumberImage);
         }
 
+        public Bitmap SetHistogramEqualization(Bitmap vehicleNumberImage)
+        {
+            HistogramEqualization filter = new HistogramEqualization();
+            filter.ApplyInPlace(vehicleNumberImage);
+            return vehicleNumberImage;
+        }
+
         public static System.Drawing.Image Convert(Bitmap oldbmp)
         {
             using (var ms = new MemoryStream())
