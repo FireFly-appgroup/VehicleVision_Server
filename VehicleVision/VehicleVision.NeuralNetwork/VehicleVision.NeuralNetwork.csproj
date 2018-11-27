@@ -1,11 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <OutputType>Library</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <ApplicationIcon />
+    <StartupObject />
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\VehicleVision.DAL\VehicleVision.DAL.csproj" />
+    <PackageReference Include="encog-dotnet-core" Version="3.4.0" />
   </ItemGroup>
 
 </Project>

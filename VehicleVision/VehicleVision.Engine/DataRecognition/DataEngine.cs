@@ -20,7 +20,7 @@ namespace VehicleVision.Engine.DataRecognition
             {
                 engine.SetVariable("tessedit_char_whitelist", _sample);
                 using (var page = engine.Process(Interpolation.ScaleByPercent(bmp, 600), Rect.Empty, PageSegMode.SingleBlock))
-                {
+                 {
                     using (StreamWriter file = new StreamWriter(Directory.GetCurrentDirectory() + "/userdata/images/NotesForCarNumbers.txt", true))
                     {
                         string text = String.Empty;

@@ -117,8 +117,8 @@ namespace VehicleVision.Engine.VideoProcessing
         {
             _filter.SetGrayScale(plateNumber);
             _filter.SetSharpenFilter(plateNumber);
-            _filter.SetBrightnessCorrection(plateNumber);
-            _filter.SetContrast(plateNumber);
+            //_filter.SetBrightnessCorrection(plateNumber);
+            //_filter.SetContrast(plateNumber);
             _filter.SetContrastStretch(plateNumber);
             _filter.SetHistogramEqualization(plateNumber);
 
